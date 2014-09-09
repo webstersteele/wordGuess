@@ -1,0 +1,155 @@
+package steele_.gui_pacticle;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+/**
+ *
+ * @author steew7981
+ */
+public class Steele_GUI implements ActionListener{
+
+    JFrame frame;
+    JPanel contentPane;
+    JLabel letterEnter, wordEnter, guessedLetters, displayWord, guesses, yourWord;
+    int numGuesses = 0;
+    JTextField letterGuess, wordGuess;
+    JButton guessLetter, guessWord;
+    String lettersGuessed = "Previously guessed letters: ";
+    final String SECRET_WORD = ("smith's class is the greatest!");
+    char [] secret_word;
+    char [] final_word;
+    
+    
+    public Steele_GUI(){
+        //create and set up a frame
+        frame = new JFrame ("Hangman");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        //create a content pane with a grid layout
+        contentPane = new JPanel ();
+        contentPane.setLayout (new GridLayout (0, 2, 10, 5));
+        contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        //create and add a prompt and then a text field
+        letterEnter = new JLabel("Enter a letter: ");
+        contentPane.add(letterEnter);
+        
+        letterGuess = new JTextField(10);
+        contentPane.add(letterGuess);
+        
+        wordEnter = new JLabel ("Enter your final word: ");
+        contentPane.add(wordEnter);
+        
+        wordGuess = new JTextField(10);
+        contentPane.add(wordGuess);
+        
+        
+        //create a button 
+        guessLetter = new JButton("Guess Letter");
+        guessLetter.setActionCommand("Guess Letter");
+        guessLetter.addActionListener(this);
+        contentPane.add(guessLetter);
+        
+        guessWord = new JButton("Guess the final word: ");
+        guessWord.setActionCommand("Guess the final word: ");
+        guessWord.addActionListener(this);
+        contentPane.add(guessWord);
+        
+        //show the amount of guesses
+        guesses = new JLabel ("Number of Guesses: " + numGuesses);
+        contentPane.add(guesses);
+        
+        
+        //show the letters previously guessed
+        guessedLetters = new JLabel(lettersGuessed);
+        contentPane.add(guessedLetters);
+        
+        yourWord = new JLabel ("YOUR WORD: ");
+        contentPane.add(yourWord);
+        
+        //show the word
+        displayWord = new JLabel (" _ _ _ _ _'_   _ _ _ _ _    _ _    _ _ _    _ _ _ _ _ _ _ _!");
+        contentPane.add(displayWord);
+        
+        
+        //add content pane to frame
+        frame.setContentPane(contentPane);
+        
+        //size and then display frame
+        frame.pack();
+        frame.setVisible(true);
+        
+        secret_word = SECRET_WORD.toCharArray();
+        final_word = new char [secret_word.length];
+    }
+    
+    public void actionPerformed(ActionEvent event){
+        String eventName = event.getActionCommand();
+        
+        if (eventName.equals("Guess Letter")){
+            //add the letter to the letters guessed
+            lettersGuessed = lettersGuessed + " " + letterGuess.getText();
+            guessedLetters.setText(lettersGuessed);
+        
+            //increase the number of guesses by one
+            numGuesses += 1;
+            guesses.setText("Number of Guesses: " + numGuesses);
+        
+            //convert input to char
+            String charGuess = letterGuess.getText();
+        
+            //detect if the letter it in the array
+            //System.out.print(charGuess);
+            for (int i=0; i < secret_word.length; i ++){
+                if (charGuess.charAt(0) == secret_word[i]){
+                final_word [i] = charGuess.charAt(0);
+                }
+            }
+       
+            String answerGuess = " ";
+        
+            for (int i = 0; i < secret_word.length; i ++){
+                if (secret_word[i] == ' '|| secret_word[i] == '\''){
+                    answerGuess += secret_word[i] + " ";
+                }else if((final_word [i] == secret_word[i])){
+                    answerGuess += secret_word[i] + " ";
+                }else{
+                    answerGuess += "_ ";
+                }
+            }
+        
+            displayWord.setText(answerGuess);
+        }else{
+            
+            String wordFinal = wordGuess.getText();
+            
+            if (wordFinal.equalsIgnoreCase("smith's class is the greatest")){
+                yourWord.setText("YOU GOT THE WORD!!");
+            }else{
+                yourWord.setText("you didn't get the word, try again next time.");
+            }
+        }
+        
+        
+    }
+    
+    
+    private static void runGUI(){
+
+        Steele_GUI letter = new Steele_GUI ();
+
+
+    }
+
+
+
+    public static void main(String[] args) {
+        javax.swing.SwingUtilities.invokeLater(new Runnable () {
+            public void run () {
+                runGUI ();
+            }
+        });
+    }
+}
